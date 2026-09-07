@@ -1,0 +1,15 @@
+.venv
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+.env
+data/
+reports/
+qdrant_storage/
+langfuse_data/
+.idea
