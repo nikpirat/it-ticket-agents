@@ -112,9 +112,7 @@ def search(
     limit: int = settings.retrieval_top_k,
 ) -> list[SearchResult]:
     """Retrieve the top-k most similar runbook chunks to the query vector."""
-    results = client.query_points(
-        collection_name=collection_name, query=query_vector, limit=limit
-    )
+    results = client.query_points(collection_name=collection_name, query=query_vector, limit=limit)
 
     search_results = []
     for point in results.points:

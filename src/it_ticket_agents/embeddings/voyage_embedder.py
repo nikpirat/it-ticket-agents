@@ -22,9 +22,7 @@ from it_ticket_agents.config.settings import settings
 logger = logging.getLogger(__name__)
 
 
-def embed_documents(
-    texts: list[str], model: str = settings.voyage_model
-) -> list[list[float]]:
+def embed_documents(texts: list[str], model: str = settings.voyage_model) -> list[list[float]]:
     """Embed document/passage text with input_type='document'. No
     instruction/role framing needed on the document side - Voyage's
     asymmetric design only requires the distinction on the query side.
