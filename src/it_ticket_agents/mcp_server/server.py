@@ -7,13 +7,12 @@ without any MCP machinery at all).
 
 from mcp.server.mcpserver import MCPServer
 
+from it_ticket_agents.config.settings import settings
 from it_ticket_agents.mcp_server import tools
 from it_ticket_agents.mcp_server.mock_state import MockStateStore
 
-DEFAULT_DB_PATH = "mock_it_state.db"
 
-
-def build_server(db_path: str = DEFAULT_DB_PATH) -> MCPServer:
+def build_server(db_path: str = settings.mock_db_path) -> MCPServer:
     """Build the MCP server with all IT-ops tools registered against a
     MockStateStore backed by db_path.
     """

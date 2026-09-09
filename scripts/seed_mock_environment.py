@@ -4,8 +4,8 @@ testing and demos in later phases.
 Run once: uv run python scripts/seed_mock_environment.py
 """
 
+from it_ticket_agents.config.settings import settings
 from it_ticket_agents.mcp_server.mock_state import MockStateStore, Ticket
-from it_ticket_agents.mcp_server.server import DEFAULT_DB_PATH
 
 TICKETS = [
     Ticket(
@@ -70,7 +70,7 @@ ACCOUNTS = [
 
 
 def main() -> None:
-    store = MockStateStore(DEFAULT_DB_PATH)
+    store = MockStateStore(settings.mock_db_path)
 
     for ticket in TICKETS:
         store.create_ticket(ticket)
@@ -84,7 +84,7 @@ def main() -> None:
     store.close()
     print(
         f"Seeded {len(TICKETS)} tickets, {len(SERVICES)} services, "
-        f"{len(ACCOUNTS)} accounts into {DEFAULT_DB_PATH}"
+        f"{len(ACCOUNTS)} accounts into {settings.mock_db_path}"
     )
 
 

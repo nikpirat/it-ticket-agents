@@ -8,8 +8,10 @@ __pycache__/
 htmlcov/
 
 .env
-data/
+data/*
+!data/runbooks/
 reports/
 qdrant_storage/
+local_qdrant_data/
 langfuse_data/
 .idea
