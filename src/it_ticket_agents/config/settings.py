@@ -32,5 +32,13 @@ class Settings(BaseSettings):
     kb_collection_name: str = "it_runbooks"
     retrieval_top_k: int = 5
 
+    # Generation (Anthropic) — Sonnet for agents that need real reasoning
+    # (diagnosis, action proposals), Haiku for fast/cheap classification
+    # (supervisor routing). A deliberate cost-optimization split, not an
+    # arbitrary choice — see Phase 0 stack decision.
+    claude_sonnet_model: str = "claude-sonnet-5"
+    claude_haiku_model: str = "claude-haiku-4-5-20251001"
+    anthropic_max_tokens: int = 1024
+
 
 settings = Settings()
