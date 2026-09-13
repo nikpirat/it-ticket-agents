@@ -79,9 +79,7 @@ async def test_each_tool_calls_its_own_name_not_the_last_registered(tmp_path: Pa
 
     assert "VPN down" in ticket_result  # ticket data, from get_ticket
     assert "vpn-gateway" in service_result  # service data, from check_service_status
-    assert "vpn-gateway" not in ticket_result or "down" not in ticket_result.split(
-        "vpn-gateway"
-    )[0]
+    assert "vpn-gateway" not in ticket_result or "down" not in ticket_result.split("vpn-gateway")[0]
 
 
 async def test_tool_call_actually_mutates_persisted_state(tmp_path: Path) -> None:

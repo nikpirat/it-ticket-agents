@@ -39,8 +39,7 @@ class SupervisorDecision(BaseModel):
     )
     escalate_immediately: bool = Field(
         description=(
-            "True if this ticket should skip automated handling and go "
-            "straight to a human."
+            "True if this ticket should skip automated handling and go straight to a human."
         )
     )
     reasoning: str = Field(

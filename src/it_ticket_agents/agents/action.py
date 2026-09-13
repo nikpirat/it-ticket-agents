@@ -38,15 +38,11 @@ class ProposedAction(BaseModel):
         description="Which action to take, or 'none' if has_action is false."
     )
     target: str = Field(
-        description=(
-            "The service_name or username the action applies to, or "
-            "empty string if none."
-        )
+        description=("The service_name or username the action applies to, or empty string if none.")
     )
     reasoning: str = Field(
         description=(
-            "Why this action (or no action) is appropriate, grounded in "
-            "the runbook excerpts."
+            "Why this action (or no action) is appropriate, grounded in the runbook excerpts."
         )
     )
 

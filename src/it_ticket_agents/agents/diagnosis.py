@@ -56,9 +56,7 @@ async def _default_diagnose(user_message: str, tools: list[StructuredTool]) -> s
 async def diagnosis_node(
     state: TicketState,
     tools: list[StructuredTool],
-    diagnose: Callable[
-        [str, list[StructuredTool]], Coroutine[Any, Any, str]
-    ] = _default_diagnose,
+    diagnose: Callable[[str, list[StructuredTool]], Coroutine[Any, Any, str]] = _default_diagnose,
 ) -> dict[str, object]:
     """LangGraph node: investigate the ticket using diagnostic tools.
 
