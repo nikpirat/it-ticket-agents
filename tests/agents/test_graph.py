@@ -71,6 +71,10 @@ def _fake_action_no_proposal(state: TicketState) -> dict[str, object]:
     return {"proposed_action": None, "requires_human_approval": False}
 
 
+async def _fake_execute_action(state: TicketState) -> dict[str, object]:
+    return {"status": "resolved", "resolution_notes": "Restarted vpn-gateway."}
+
+
 class TestGraphRouting:
     async def test_escalate_immediately_skips_straight_to_escalated(self) -> None:
         graph = build_graph(
@@ -88,21 +92,30 @@ class TestGraphRouting:
         assert result["diagnosis"] == ""
         assert result["kb_context"] == []
 
-    async def test_normal_flow_runs_all_worker_nodes_in_order(self) -> None:
+    async def test_normal_flow_with_proposed_action_routes_to_execute_action(self) -> None:
+        """Routing test only — the real interrupt()/Command(resume=)
+        mechanics of execute_action_node are tested separately in
+        test_execute_action.py, using the actual node and a real
+        checkpointer. Here, execute_action_fn is faked so this test
+        verifies sequencing (supervisor -> diagnosis -> knowledge_base ->
+        action -> execute_action) without needing a checkpointer at all.
+        """
         graph = build_graph(
             tools=[],
             supervisor_fn=_fake_supervisor(escalate=False),
             diagnosis_fn=_fake_diagnosis,
             knowledge_base_fn=_fake_knowledge_base,
             action_fn=_fake_action_with_proposal,
+            execute_action_fn=_fake_execute_action,
         )
 
         result = await graph.ainvoke(_make_initial_state())
 
         assert result["diagnosis"] == "vpn-gateway is down."
         assert len(result["kb_context"]) == 1
-        assert result["status"] == "pending_approval"
         assert result["proposed_action"]["action_type"] == "restart_service"
+        assert result["status"] == "resolved"
+        assert result["resolution_notes"] == "Restarted vpn-gateway."
 
     async def test_no_proposed_action_results_in_escalation(self) -> None:
         graph = build_graph(

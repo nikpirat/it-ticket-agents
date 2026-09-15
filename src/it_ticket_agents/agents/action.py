@@ -48,14 +48,18 @@ class ProposedAction(BaseModel):
 
 
 def build_action_llm() -> ChatAnthropic:
-    """Build the Sonnet-backed LLM used for action planning - this needs
+    """Build the Sonnet-backed LLM used for action planning — this needs
     real reasoning about whether the runbooks actually support
     automating this specific situation, not just pattern-matching a
-    category."""
+    category.
+
+    No temperature parameter: same reason as diagnosis.py's
+    build_diagnosis_llm — Sonnet 5 rejects it entirely, confirmed against
+    current sources and Anthropic's own migration notes.
+    """
     return ChatAnthropic(
         model=settings.claude_sonnet_model,
         max_tokens=settings.anthropic_max_tokens,
-        temperature=0,
     )
 
 

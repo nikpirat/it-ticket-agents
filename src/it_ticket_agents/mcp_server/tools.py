@@ -45,10 +45,24 @@ def list_open_tickets(store: MockStateStore) -> list[dict[str, object]]:
 
 
 def check_service_status(store: MockStateStore, service_name: str) -> dict[str, object]:
-    """Check whether a service is running, degraded, or down."""
+    """Check whether a service is running, degraded, or down.
+
+    Real finding from live agent testing: the diagnosis agent tried
+    eight different guessed service names ("VPN", "gateway", "network",
+    etc.) before giving up, never once trying the actual canonical name
+    — nothing in its context told it what service names actually exist.
+    Including the known names in the error message lets it self-correct
+    on its very next tool call instead of exhausting guesses.
+    """
     status = store.get_service_status(service_name)
     if status is None:
-        return {"error": f"Unknown service '{service_name}'"}
+        known = store.list_service_names()
+        return {
+            "error": (
+                f"Unknown service '{service_name}'. "
+                f"Known service names: {known}"
+            )
+        }
     return {"name": status.name, "status": status.status, "last_restarted": status.last_restarted}
 
 
@@ -61,7 +75,8 @@ def restart_service(store: MockStateStore, service_name: str) -> dict[str, objec
     """
     existing = store.get_service_status(service_name)
     if existing is None:
-        return {"error": f"Unknown service '{service_name}'"}
+        known = store.list_service_names()
+        return {"error": f"Unknown service '{service_name}'. Known service names: {known}"}
     store.set_service_status(service_name, status="running", restarted=True)
     return {"name": service_name, "status": "running", "action": "restarted"}
 

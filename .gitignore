@@ -15,3 +15,7 @@ qdrant_storage/
 local_qdrant_data/
 langfuse_data/
 .idea
+.qdrant-initialized
+*.db
+qdrant
+*.tar.gz*

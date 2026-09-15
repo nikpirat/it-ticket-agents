@@ -26,13 +26,21 @@ alone."""
 
 
 def build_diagnosis_llm() -> ChatAnthropic:
-    """Build the Sonnet-backed LLM used for diagnosis - this needs real
+    """Build the Sonnet-backed LLM used for diagnosis — this needs real
     reasoning about which tool to call and how to interpret its result,
-    unlike the supervisor's pure classification task."""
+    unlike the supervisor's pure classification task.
+
+    No temperature parameter: confirmed via multiple current sources and
+    Anthropic's own Sonnet 5 migration notes that Sonnet 5 (and Opus
+    4.7+) reject temperature/top_p/top_k entirely at any non-default
+    value, returning a 400 error — "steer with the prompt" is the
+    documented replacement. Haiku 4.5 (used by the supervisor) still
+    accepts temperature fine; this constraint is specific to the newer
+    Sonnet/Opus generation, not a general Anthropic API change.
+    """
     return ChatAnthropic(
         model=settings.claude_sonnet_model,
         max_tokens=settings.anthropic_max_tokens,
-        temperature=0,
     )
 
 

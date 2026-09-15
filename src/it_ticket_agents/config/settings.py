@@ -7,11 +7,21 @@ grep-and-replace across the codebase, and avoids the exact class of bug
 where two places disagree about the same value (e.g. a hardcoded
 embedding dimension drifting out of sync with the model actually
 producing it).
+
+Real gotcha found via live testing: pydantic-settings' own `env_file`
+mechanism only loads values into THIS class's `ITA_`-prefixed fields —
+it does not set real OS environment variables. Third-party SDKs
+(anthropic, voyageai) read `ANTHROPIC_API_KEY`/`VOYAGE_API_KEY` directly
+via `os.environ`, not through this Settings class, so they never see
+values that only exist inside pydantic-settings' own internal loading.
+The explicit `load_dotenv()` below loads the same .env file into the
+real process environment, covering both cases from one file.
 """
 
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
+load_dotenv()
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="ITA_",

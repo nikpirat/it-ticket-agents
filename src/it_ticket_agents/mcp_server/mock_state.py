@@ -141,6 +141,13 @@ class MockStateStore:
         row = self._conn.execute("SELECT * FROM services WHERE name = ?", (name,)).fetchone()
         return _row_to_service(row) if row else None
 
+    def list_service_names(self) -> list[str]:
+        """All currently known service names — used to make an 'unknown
+        service' tool error self-correcting (see tools.check_service_status)
+        instead of a dead end the agent has no way to recover from."""
+        rows = self._conn.execute("SELECT name FROM services ORDER BY name").fetchall()
+        return [row["name"] for row in rows]
+
     def set_service_status(self, name: str, status: str, restarted: bool = False) -> None:
         last_restarted = _now_iso() if restarted else None
         existing = self.get_service_status(name)

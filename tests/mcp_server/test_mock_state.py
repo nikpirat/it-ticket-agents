@@ -121,6 +121,20 @@ class TestServices:
         assert status.status == "running"
         assert status.last_restarted is not None
 
+    def test_list_service_names_returns_all_known_names_sorted(self, tmp_path: Path) -> None:
+        store = MockStateStore(tmp_path / "state.db")
+        store.set_service_status("vpn-gateway", status="down")
+        store.set_service_status("email-server", status="running")
+
+        names = store.list_service_names()
+
+        assert names == ["email-server", "vpn-gateway"]
+
+    def test_list_service_names_empty_when_no_services(self, tmp_path: Path) -> None:
+        store = MockStateStore(tmp_path / "state.db")
+
+        assert store.list_service_names() == []
+
 
 class TestAccounts:
     def test_unknown_account_returns_none(self, tmp_path: Path) -> None:

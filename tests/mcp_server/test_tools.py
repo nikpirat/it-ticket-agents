@@ -61,6 +61,20 @@ class TestServiceTools:
 
         assert "error" in result
 
+    def test_unknown_service_error_lists_known_service_names(self, tmp_path: Path) -> None:
+        """Real fix motivated by live agent testing: the diagnosis agent
+        tried eight guessed service names before giving up, since nothing
+        told it what names actually exist. The error must be
+        self-correcting — including the real names — not a dead end."""
+        store = MockStateStore(tmp_path / "state.db")
+        store.set_service_status("vpn-gateway", status="down")
+        store.set_service_status("email-server", status="running")
+
+        result = tools.check_service_status(store, "VPN Gateway")  # a plausible wrong guess
+
+        assert "vpn-gateway" in result["error"]
+        assert "email-server" in result["error"]
+
     def test_restart_service_brings_it_to_running(self, tmp_path: Path) -> None:
         store = MockStateStore(tmp_path / "state.db")
         store.set_service_status("vpn-gateway", status="down")
@@ -82,6 +96,16 @@ class TestServiceTools:
 
         assert "error" in result
         assert store.get_service_status("phantom-service") is None
+
+    def test_restart_unknown_service_error_lists_known_service_names(
+            self, tmp_path: Path
+    ) -> None:
+        store = MockStateStore(tmp_path / "state.db")
+        store.set_service_status("vpn-gateway", status="down")
+
+        result = tools.restart_service(store, "VPN")
+
+        assert "vpn-gateway" in result["error"]
 
 
 class TestAccountTools:
