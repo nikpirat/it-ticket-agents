@@ -97,9 +97,7 @@ class TestServiceTools:
         assert "error" in result
         assert store.get_service_status("phantom-service") is None
 
-    def test_restart_unknown_service_error_lists_known_service_names(
-            self, tmp_path: Path
-    ) -> None:
+    def test_restart_unknown_service_error_lists_known_service_names(self, tmp_path: Path) -> None:
         store = MockStateStore(tmp_path / "state.db")
         store.set_service_status("vpn-gateway", status="down")
 

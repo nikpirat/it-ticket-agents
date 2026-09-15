@@ -57,12 +57,7 @@ def check_service_status(store: MockStateStore, service_name: str) -> dict[str, 
     status = store.get_service_status(service_name)
     if status is None:
         known = store.list_service_names()
-        return {
-            "error": (
-                f"Unknown service '{service_name}'. "
-                f"Known service names: {known}"
-            )
-        }
+        return {"error": (f"Unknown service '{service_name}'. Known service names: {known}")}
     return {"name": status.name, "status": status.status, "last_restarted": status.last_restarted}
 
 

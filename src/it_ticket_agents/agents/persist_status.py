@@ -15,9 +15,7 @@ from langchain_core.tools import StructuredTool
 from it_ticket_agents.agents.state import TicketState
 
 
-async def persist_status_node(
-    state: TicketState, tools: list[StructuredTool]
-) -> dict[str, object]:
+async def persist_status_node(state: TicketState, tools: list[StructuredTool]) -> dict[str, object]:
     """Write state['status']/state['resolution_notes'] back to the
     ticket's persisted record. A shared convergence point all three
     terminal paths (escalate, finalize, execute_action) route through
